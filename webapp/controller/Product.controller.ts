@@ -384,9 +384,9 @@ export default class ProductController extends Controller {
         let selectedDel = this.byId("selectedDel") as Text;
 
         const segmentedButton1 = this.getView()!.byId("deliveryid") as SegmentedButton;
-        debugger;
+        
         this.selectedMethod1 = segmentedButton1.getSelectedKey();///////////////////
-        debugger;
+        
 
         selectedDel.setText(this.selectedMethod1);   
     }
