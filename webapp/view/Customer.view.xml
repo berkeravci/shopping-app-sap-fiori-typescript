@@ -1,0 +1,44 @@
+<mvc:View controllerName="com.avci.project.controller.Customer"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:form="sap.ui.layout.form">
+    <Page id="page" title="{i18n>title}">
+        <Table id="customerTable" items="{path: 'custModel>/items'}" width="calc(100% - 40px)" class="SapUiSmallMargin">
+            <columns>
+                <Column>
+                    <Text text="Customer ID" />
+                </Column>
+                <Column>
+                    <Text text="Contact Name" />
+                </Column>
+                <Column>
+                    <Text text="Contact Title" />
+                </Column>
+                <Column>
+                    <Text text="Conpany Name" />
+                </Column>
+                <Column>
+                    <Text text="Address" />
+                </Column>
+                <Column>
+                    <Text text="City" />
+                </Column>
+                <!-- Add other columns as needed -->
+            </columns>
+            <items>
+                <ColumnListItem press="onItemPress">
+                    <cells>
+                        <Text text="{custModel>CustomerID}" />
+                        <Text text="{custModel>ContactName}" />
+                        <Text text="{custModel>ContactTitle}" />
+                        <Text text="{custModel>CompanyName}" />
+                        <Text text="{custModel>Address}" />
+                        <Text text="{custModel>City}" />
+                        <!-- Add other cells for additional properties -->
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+        
+        
+    </Page>
+</mvc:View>

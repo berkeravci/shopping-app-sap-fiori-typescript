@@ -1,0 +1,32 @@
+<mvc:View controllerName="com.avci.project.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:form="sap.ui.layout.form">
+    <Page id="page" title="{i18n>title}">
+        
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="1" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="2" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="3" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="4" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="5" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="6" press=".onProductTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="7" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="8" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="9" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="10" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="11" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        <GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" id="12" press=".onTap" frameType= "OneByOne">
+        </GenericTile>
+        
+    </Page>
+</mvc:View>
