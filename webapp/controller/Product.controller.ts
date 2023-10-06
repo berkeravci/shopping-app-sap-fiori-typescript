@@ -25,6 +25,8 @@ import Input from "sap/m/Input";
 import ContentManager from "sap/ui/vk/ContentManager";
 import Text from "sap/m/Text";
 import TextArea from "sap/m/TextArea";
+import JSONPropertyBinding from "sap/ui/model/json/JSONPropertyBinding";
+import PropertyBinding from "sap/ui/model/PropertyBinding";
 interface History {
     [key: string]: any;
 }
@@ -39,6 +41,7 @@ export default class ProductController extends Controller {
     private selectedMethod: string;
     private selectedMethod1: string;
     formatter = formatter;
+    private model:JSONModel;
     
     public onInit():void{
         
@@ -55,14 +58,33 @@ export default class ProductController extends Controller {
         this.oDataModel = new ODataModel({
             serviceUrl: "/V2/Northwind/Northwind.svc/",
           });
-        this.fetchProductData();
-        this.oDataModel.setProperty("/selectedPayment", "Credit Card");
-        this.oDataModel.setProperty("/selectedDeliveryMethod", "Standard Delivery");
-        this.oDataModel.setProperty("/differentDeliveryAddress", false);
-        this.oDataModel.setProperty("/CashOnDelivery", {});
-        this.oDataModel.setProperty("/BillingAddress", {});
-        this.oDataModel.setProperty("/CreditCard", {});
-        this.oDataModel.updateBindings();
+        this.model = new JSONModel();
+          var myMod = this.getView()!.getModel! as any;
+         this.model.attachEventOnce("requestCompleted", ():void => {
+            
+            
+            this.model.setProperty("/differentDeliveryAddress", false);
+            this.model.setProperty("/CashOnDelivery", {});
+            //myMod.setProperty("/BillingAddress", {});
+            this.model.setProperty("/CreditCard",{});
+            this.model.setProperty("/selectedPaymentt", "Credit Cardd");
+            //this.model.setProperty("/CreditCard/Name",true);
+            this.model.setProperty("/CreditCard", { Name: "berker" });
+            //this.model.setProperty("/BillingAddress",{Address: "asdasd"}) as any;
+            
+            //this.model.setProperty("/BillingAddress",{});
+            this.model.updateBindings(true);
+
+            // console.log("lolol"+this.model.getProperty("/ProductsTotalPrice"));
+            // this.model.setProperty("/ProductsTotalPrice",123123);
+            // console.log(this.model.getProperty("/ProductsTotalPrice"));
+            // this.model.refresh();
+         }).bindProperty("/selectedPaymentt"); 
+         this.fetchProductData();
+         this.getView()!.setModel(this.model);  
+        // })
+        
+
         //this.calcTotal();
         
     }
@@ -131,11 +153,12 @@ export default class ProductController extends Controller {
             
             
         }
-        
-             //this.oDataModel.setProperty("/ProductsTotalPrice",totalUnitPrice);
-             console.log("asdasd"+this.oDataModel.getProperty("/ProductsTotalPrice"));
-            let header = this.byId("objHeader") as ObjectHeader;
-            header!.setNumber(totalUnitPrice.toString());
+            
+             this.model.setProperty("/ProductsTotalPrice",totalUnitPrice);
+             
+            //  console.log("asdasd"+this.oDataModel.getProperty("/ProductsTotalPrice"));
+            // let header = this.byId("objHeader") as ObjectHeader;
+            // header!.setNumber(totalUnitPrice.toString());
             
             
         } catch (error) {
@@ -147,9 +170,14 @@ export default class ProductController extends Controller {
         
     }
     public selectedPaymentMethod():void{
-        const segmentedButton = this.getView()!.byId("paymentMethodSelection") as SegmentedButton;
-        this.selectedMethod = segmentedButton.getSelectedKey();
-        console.log("Selected Payment Method:",this.selectedMethod);
+        
+        
+        //this.model.getProperty("/selectedPayment") || "CreditCard";
+
+        const selectedKey = this.model.getProperty("/selectedPayment");
+        // const segmentedButton = this.getView()!.byId("paymentMethodSelection") as SegmentedButton;
+        // this.selectedMethod = segmentedButton.getSelectedKey();
+        console.log("Selected Payment Method:",selectedKey);
         this.setDiscardableProperty({
             message: "Are you sure you want to change the payment type ? This will discard your progress.",
             discardStep: this.byId("PaymentTypeStep"),
@@ -159,15 +187,19 @@ export default class ProductController extends Controller {
     }
 
     public selectedDeliveryMethod():void{
-        const segmentedButton1 = this.getView()!.byId("deliveryid") as SegmentedButton;
-        this.selectedMethod1 = segmentedButton1.getSelectedKey();
-        console.log("Selected Payment Method:",this.selectedMethod1);
+        this.model.getProperty("/selectedDeliveryMethod") || "Standard Delivery";
+        const selectedKey = this.model.getProperty("/selectedDeliveryMethod");
+        console.log(typeof(selectedKey));
+        // const segmentedButton1 = this.getView()!.byId("deliveryid") as SegmentedButton;
+        // this.selectedMethod1 = segmentedButton1.getSelectedKey();
+        console.log("Selected Delivery Method:",selectedKey);
         this.setDiscardableProperty({
             message: "Are you sure you want to change the payment type ? This will discard your progress.",
             discardStep: this.byId("DeliveryTypeStep"),
             modelPath: "/selectedPayment",
             historyPath: "prevPaymentSelect"
         });
+        debugger;
     }
 
     public handleDelete(oEvent:any):void{
@@ -229,9 +261,9 @@ export default class ProductController extends Controller {
         //console.log("current step "+this._wizard.getCurrentStep());
 
         console.log("model is"+this.oDataModel);
-        var selectedKey = this.oDataModel.getProperty("/selectedPayment") as any;
-        console.log(selectedKey);
-        switch (this.selectedMethod) {
+        var selectedKeyy = this.model.getProperty("/selectedPayment") as any;
+        console.log("ddddd"+selectedKeyy);
+        switch (selectedKeyy) {
             case "Credit Card":
                 
                 //this._wizard.nextStep();
@@ -308,28 +340,83 @@ export default class ProductController extends Controller {
                 }
             });
         } else {
-            //history[params.historyPath] = this.model.getProperty(params.modelPath);
+            history[params.historyPath] = this.model.getProperty(params.modelPath);
         }
     }
     public checkCreditCardStep():void {
-        const model = this.getView()?.getModel();
-        let x=model?.getProperty("CustomerName");
-        console.log("asasas"+x);
-        console.log(model!.getProperty("CreditCard/Name"));
+        if(!this.model.getProperty("/selectedPayment")){
+            this.model.setProperty("/selectedPayment","CreditCard");
+        }
+        if(!this.model.getProperty("/CreditCard")){
+            this.model.setProperty("/CreditCard",{});
+        }
+        
+
+        if(!this.model.getProperty("/CreditCard/Name")){
+            this.model.setProperty("/CreditCard/Name","");
+        }
+        if(!this.model.getProperty("/CreditCard/CardNumber")){
+            this.model.setProperty("/CreditCard/CardNumber",0);
+        }
+        if(!this.model.getProperty("/CreditCard/SecurityCode")){
+            this.model.setProperty("/CreditCard/SecurityCode",0);
+        }
+        if(!this.model.getProperty("/CreditCard/Expire")){
+            this.model.setProperty("/CreditCard/Expire","");
+        }
+
+        var name = this.model.getProperty("/CreditCard/Name") as String;
+        var number = this.model.getProperty("/CreditCard/CardNumber") as Number;
+        var code = this.model.getProperty("/CreditCard/SecurityCode") as Number;
+        var expire = this.model.getProperty("/CreditCard/Expire") as Date;
+        var mod = this.model as Model;
+        //var mm = this.getView()!.getModel()! as Model;
+        console.log("tt"+typeof(this.model));
+        console.log("xdxd" + this.model.getProperty("/selectedPayment"));
+        //console.log(mm.getJSON());
+        // const model = this.getView()?.getModel();
+        // let x=model?.getProperty("CustomerName");
+        // console.log("asasas"+x);
+        // console.log(model!.getProperty("CreditCard/Name"));
         
         
-        var input = this.byId("crname") as Input;
-        var cardNamee = input.getValue();
-        console.log("Nameee"+cardNamee.length);
-        var cardName:any = model!.getProperty("CreditCard/Name");
-        console.log("card name is "+cardName);
-        if (cardNamee.length < 3) {
+        // var input = this.byId("crname") as Input;
+        // var cardNamee = input.getValue();
+        // console.log("Nameee"+cardNamee.length);
+        // var cardName:any = model!.getProperty("CreditCard/Name");
+        // console.log("card name is "+cardName);
+        // if (cardNamee.length < 3) {
             
-            this._wizard.invalidateStep(this.byId("CreditCardStep") as WizardStep);
-        }
-        else{
-            this._wizard.validateStep(this.byId("CreditCardStep") as WizardStep);
-        }
+        //     this._wizard.invalidateStep(this.byId("CreditCardStep") as WizardStep);
+        // }
+        // else{
+        //     this._wizard.validateStep(this.byId("CreditCardStep") as WizardStep);
+        // }
+        // console.log("pp"+mm.getProperty("/selectedPayment"));
+        // console.log("pp"+mm.getProperty("/selectedPaymentt"));
+        // console.log("pp"+mm.getProperty("/CreditCard"));
+        //console.log("pp"+mm.getProperty("/selectedPayment"));
+        
+        //var cardName = this.model.getProperty("/CreditCard/Name") || "";
+        const today = new Date();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0
+        const dd = String(today.getDate()).padStart(2, '0');
+        const yy = String(today.getFullYear()).slice(-2); // Get the last 2 digits of the year
+
+        const formattedDate = `${mm}/${dd}/${yy}`;
+        console.log(expire);
+        //console.log(expire.getTime());
+        console.log(formattedDate);
+        console.log(number);
+        debugger;
+        var nnumber = number.toString();
+        var ccode = code.toString();
+			if (name.length < 3 || nnumber.length < 16 || ccode.length < 3 || expire < today) {
+                
+				this._wizard.invalidateStep(this.byId("CreditCardStep") as WizardStep);
+			} else {
+				this._wizard.validateStep(this.byId("CreditCardStep") as WizardStep);
+			}
     }
 
     public checkCashOnDeliveryStep():void {
@@ -368,10 +455,10 @@ export default class ProductController extends Controller {
 
         let text = this.byId("selPay") as Text;
                
-        const segmentedButton = this.getView()!.byId("paymentMethodSelection") as SegmentedButton;
-        this.selectedMethod = segmentedButton.getSelectedKey();
-        console.log("selmet "+this.selectedMethod);
-        text.setText(this.selectedMethod);
+        // const segmentedButton = this.getView()!.byId("paymentMethodSelection") as SegmentedButton;
+        // this.selectedMethod = segmentedButton.getSelectedKey();
+        // console.log("selmet "+this.selectedMethod);
+        // text.setText(this.selectedMethod);
         let input = this.byId("bsad") as Input;
         let input1 = this.byId("bscity") as Input;
         let input2 = this.byId("bszip") as Input;
@@ -381,49 +468,101 @@ export default class ProductController extends Controller {
         let inp2 = input2.getValue();
         let inp3 = input3.getValue();
         
-        let selectedDel = this.byId("selectedDel") as Text;
+        // var selectedKeyy = this.model.getProperty("/selectedDeliveryMethod") as any;
+        // console.log("ddddd"+selectedKeyy);
 
-        const segmentedButton1 = this.getView()!.byId("deliveryid") as SegmentedButton;
+        // let selectedDel = this.byId("selectedDel") as Text;
+
+        // const segmentedButton1 = this.getView()!.byId("deliveryid") as SegmentedButton;
         
-        this.selectedMethod1 = segmentedButton1.getSelectedKey();///////////////////
+        // this.selectedMethod1 = segmentedButton1.getSelectedKey();///////////////////
         
 
-        selectedDel.setText(this.selectedMethod1);   
+        // selectedDel.setText(this.selectedMethod1);   
     }
 
     public checkBillingStep():void {
-        const model = this.getView()?.getModel();
-        let input = this.byId("bsad") as Input;
-        let input1 = this.byId("bscity") as Input;
-        let input2 = this.byId("bszip") as Input;
-        let input3 = this.byId("bsct") as Input;
-        let input4 = this.byId("note") as TextArea;
-        let inp = input.getValue();
-        let inp1 = input1.getValue();
-        let inp2 = input2.getValue();
-        let inp3 = input3.getValue();
-        let inp4 = input4.getValue();
-
-        var text1 = this.byId("ba") as Text;
-        var text2 = this.byId("bc") as Text;
-        var text3 = this.byId("bz") as Text;
-        var text4 = this.byId("bco") as Text;
-        var text5 = this.byId("bn") as Text;
+        //const model = this.getView()?.getModel();
+        if(!this.model.getProperty("/BillingAddress")){
+            this.model.setProperty("/BillingAddress",{});
+        }
+        if(!this.model.getProperty("/BillingAddress/Address")){
+            this.model.setProperty("/BillingAddress/Address","");
+        }
+        if(!this.model.getProperty("/BillingAddress/City")){
+            this.model.setProperty("/BillingAddress/City","");
+        }
+        if(!this.model.getProperty("/BillingAddress/ZipCode")){
+            this.model.setProperty("/BillingAddress/ZipCode","");
+        }
+        if(!this.model.getProperty("/BillingAddress/Country")){
+            this.model.setProperty("/BillingAddress/Country","");
+        }
+        if(!this.model.getProperty("/BillingAddress/Note")){
+            this.model.setProperty("/BillingAddress/Note","");
+        }
+        let address = this.model.getProperty("/BillingAddress/Address") as String;
+        console.log(address);
+        console.log(address.length);
+        let city = this.model.getProperty("/BillingAddress/City") as String;
+        let zipcode = this.model.getProperty("/BillingAddress/ZipCode") as String;
+        let country = this.model.getProperty("/BillingAddress/Country") as String;
+        let note = this.model.getProperty("/BillingAddress/Note") as String;
+        console.log("aw"+this.model.getProperty("/BillingAddress/Address"));
+        //debugger;
+        //console.log(this.model.getProperty("/selectedPayment"));
+        //var xx = this.getView()?.getModel();
         
-        text1.setText(inp);
-        text2.setText(inp1);
-        text3.setText(inp2);
-        text4.setText(inp3);
-        text5.setText(inp4);
+        //console.log(this.model);
+        //this.model.setProperty("/xxx","qweqwe");
+        //console.log(this.model);
+        //console.log(this.model.getProperty("/xxx"));
+        // debugger;
+        // var address = this.getView()?.getModel()!.getProperty("/BillingAddress") as Object;
+        //address.getValue()
+        //console.log(address);
+        // var mymodel=this.getView()?.getModel()! as Model;
+        // console.log("lol"+mymodel.bindList("/BillingAddress/Address"));
+
+        // this.model.setProperty("/BillingAddress/Address",address);
+        //address.getValue();
+        //let value = address['Address'];
+
+        // console.log(address.hasOwnProperty("Address"));
+        // console.log(address.valueOf);
+        // console.log(address);
+        //let input = this.byId("bsad") as Input;
+        // let input1 = this.byId("bscity") as Input;
+        // let input2 = this.byId("bszip") as Input;
+        // let input3 = this.byId("bsct") as Input;
+        // let input4 = this.byId("note") as TextArea;
+        // //let inp = input.getValue();
+        // let inp1 = input1.getValue();
+        // let inp2 = input2.getValue();
+        // let inp3 = input3.getValue();
+        // let inp4 = input4.getValue();
+
+        // var text1 = this.byId("ba") as Text;
+        // var text2 = this.byId("bc") as Text;
+        // var text3 = this.byId("bz") as Text;
+        // var text4 = this.byId("bco") as Text;
+        // var text5 = this.byId("bn") as Text;
+        
+        // //text1.setText(inp);
+        // text2.setText(inp1);
+        // text3.setText(inp2);
+        // text4.setText(inp3);
+        // text5.setText(inp4);
         //text5.setText(inp);
 
         // var address = model!.getProperty("/BillingAddress/Address") || "";
         // var city = model!.getProperty("/BillingAddress/City") || "";
         // var zipCode = model!.getProperty("/BillingAddress/ZipCode") || "";
         // var country = model!.getProperty("/BillingAddress/Country") || "";
-
-        if (inp.length < 3 || inp1.length < 3 || inp2.length < 3 || inp3.length < 3) {
+        
+        if (address.length < 3 || city.length < 3 || zipcode.length < 3 || country.length < 3) {
             this._wizard.invalidateStep(this.byId("BillingStep") as WizardStep);
+            
         } else {
             this._wizard.validateStep(this.byId("BillingStep") as WizardStep);
         }

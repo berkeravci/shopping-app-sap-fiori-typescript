@@ -90,14 +90,14 @@
 								editable="true"
 								layout="ColumnLayout">
 								<Label text="Name on card" required="true"/>
-								<Input liveChange="checkCreditCardStep" id="crname"
+								<Input value="{/CreditCard/Name}" liveChange="checkCreditCardStep" id="crname"
 								       valueLiveUpdate="true"/>
-								<Label text="Card number"/>
-								<Input value="{/CardNumber}"/>
-								<Label text="Security code"/>
-								<Input value="{/CreditCard/SecurityCode}"/>
-								<Label text="Expiration date"/>
-								<DatePicker value="{/CreditCard/Expire}"/>
+								<Label text="Card number"  required="true"/>
+								<Input value="{/CardNumber}" liveChange="checkCreditCardStep"/>
+								<Label text="Security code" required="true"/>
+								<Input value="{/CreditCard/SecurityCode}" liveChange="checkCreditCardStep"/>
+								<Label text="Expiration date" required="true"/>							
+								<DatePicker value="{/CreditCard/Expire}" liveChange="checkCreditCardStep"/>
 							</form:SimpleForm>
 						</WizardStep>
 						<WizardStep
@@ -164,16 +164,16 @@
 									selected="{/differentDeliveryAddress}"
 									select="setDifferentDeliveryAddress"/>
 								<Label text="Address" required="true"/>
-								<Input id="bsad" liveChange="checkBillingStep"
+								<Input value="{/BillingAddress/Address}" liveChange="checkBillingStep"
 								       valueLiveUpdate="true"/>
 								<Label text="City" required="true"/>
-								<Input id="bscity" liveChange="checkBillingStep"
+								<Input value="{/BillingAddress/City}" liveChange="checkBillingStep"
 								       valueLiveUpdate="true"/>
 								<Label text="Zip Code" required="true"/>
-								<Input id="bszip" liveChange="checkBillingStep"
+								<Input value="{/BillingAddress/ZipCode}" liveChange="checkBillingStep"
 								       valueLiveUpdate="true"/>
 								<Label text="Country" required="true"/>
-								<Input id="bsct" liveChange="checkBillingStep"
+								<Input value="{/BillingAddress/Country}" liveChange="checkBillingStep"
 								       valueLiveUpdate="true"/>
 								<Label text="Note" required="false"/>
 								<TextArea id="note" rows="8" value="{/BillingAddress/Note}"/>
@@ -341,7 +341,7 @@
 						layout="ResponsiveGridLayout">
 						<form:content>
 							<Label text="Address"/>
-							<Text id="ba" text="{/BillingAddress/Address}"/>
+							<Text  text="{/BillingAddress/Address}"/>
 							<Label text="City"/>
 							<Text id="bc" text="{/BillingAddress/City}"/>
 							<Label text="Zip Code"/>
@@ -362,6 +362,7 @@
 						<form:content>
 							<Label text="Chosen delivery type"/>
 							<Text id="selectedDel" text="{/selectedDeliveryMethod}"/>
+							<Text text="{/selectedDeliveryMethod}"/>
 							<Link press="handleNavBackToDeliveryType" text="Edit"/>
 						</form:content>
 					</form:SimpleForm>
