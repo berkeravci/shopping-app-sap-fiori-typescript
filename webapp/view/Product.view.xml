@@ -93,11 +93,11 @@
 								<Input value="{/CreditCard/Name}" liveChange="checkCreditCardStep" id="crname"
 								       valueLiveUpdate="true"/>
 								<Label text="Card number"  required="true"/>
-								<Input value="{/CardNumber}" liveChange="checkCreditCardStep"/>
+								<Input value="{/CreditCard/CardNumber}" liveChange="checkCreditCardStep" valueLiveUpdate="true"/>
 								<Label text="Security code" required="true"/>
-								<Input value="{/CreditCard/SecurityCode}" liveChange="checkCreditCardStep"/>
+								<Input value="{/CreditCard/SecurityCode}" liveChange="checkCreditCardStep" valueLiveUpdate="true"/>
 								<Label text="Expiration date" required="true"/>							
-								<DatePicker value="{/CreditCard/Expire}" liveChange="checkCreditCardStep"/>
+								<DatePicker value="{/CreditCard/Expire}" liveChange="checkCreditCardStep" change="checkCreditCardStep" valueLiveUpdate="true"/>
 							</form:SimpleForm>
 						</WizardStep>
 						<WizardStep
@@ -138,12 +138,12 @@
 								editable="true"
 								layout="ColumnLayout">
 								<Label text="First Name" required="true"/>
-								<Input liveChange="checkCashOnDeliveryStep" id="cod"
+								<Input liveChange="checkCashOnDeliveryStep" value="{/CashOnDelivery/FirstName}"
 								       valueLiveUpdate="true"/>
 								<Label text="Last Name"/>
 								<Input value="{/CashOnDelivery/LastName}"/>
 								<Label text="Phone Number"/>
-								<Input value="{/CashOnDelivery/Phone Number}"/>
+								<Input value="{/CashOnDelivery/PhoneNumber}"/>
 								<Label text="Email address"/>
 								<Input value="{/CashOnDelivery/Email}"/>
 							</form:SimpleForm>
@@ -151,7 +151,7 @@
 						<WizardStep
 							id="BillingStep"
 							title="Billing address"
-							subsequentSteps="DeliveryAddressStep, DeliveryTypeStep"
+							subsequentSteps="DeliveryTypeStep"
 							activate="checkBillingStep"
 							complete="billingAddressComplete"
 							icon="sap-icon://sales-quote">
@@ -159,10 +159,10 @@
 							<form:SimpleForm
 								editable="true"
 								layout="ColumnLayout">
-								<Label text="Delivery address is different"/>
-								<CheckBox
+								<!-- <Label text="Delivery address is different"/> -->
+								<!-- <CheckBox
 									selected="{/differentDeliveryAddress}"
-									select="setDifferentDeliveryAddress"/>
+									select="setDifferentDeliveryAddress"/> -->
 								<Label text="Address" required="true"/>
 								<Input value="{/BillingAddress/Address}" liveChange="checkBillingStep"
 								       valueLiveUpdate="true"/>
@@ -179,7 +179,7 @@
 								<TextArea id="note" rows="8" value="{/BillingAddress/Note}"/>
 							</form:SimpleForm>
 						</WizardStep>
-						<WizardStep
+						<!-- <WizardStep
 							id="DeliveryAddressStep"
 							title="Delivery address"
 							nextStep="DeliveryTypeStep"
@@ -198,7 +198,7 @@
 								<Label text="Note"/>
 								<TextArea rows="8"/>
 							</form:SimpleForm>
-						</WizardStep>
+						</WizardStep> -->
 						<WizardStep
 							id="DeliveryTypeStep"
 							title="Delivery type"
@@ -282,7 +282,7 @@
 							<Label text="Name on card"/>
 							<Text text="{/CreditCard/Name}"/>
 							<Label text="Card number"/>
-							<Text text="{/CardNumber}"/>
+							<Text text="{/CreditCard/CardNumber}"/>
 							<Label text="Security code"/>
 							<Text text="{/CreditCard/SecurityCode}"/>
 							<Label text="Expiration date"/>
@@ -327,7 +327,7 @@
 							<Label text="Last Name"/>
 							<Text text="{/CashOnDelivery/LastName}"/>
 							<Label text="Phone number"/>
-							<Text text="{/CashOnDelivery/Phone Number}"/>
+							<Text text="{/CashOnDelivery/PhoneNumber}"/>
 							<Label text="Email address"/>
 							<Text text="{/CashOnDelivery/Email}"/>
 							<Link press="handleNavBackToCashOnDelivery" text="Edit"/>
@@ -335,7 +335,7 @@
 					</form:SimpleForm>
 
 					<form:SimpleForm
-						title="3. Billing Address"
+						title="4. Billing Address"
 						minWidth="1024"
 						editable="false"
 						layout="ResponsiveGridLayout">
@@ -355,13 +355,12 @@
 					</form:SimpleForm>
 
 					<form:SimpleForm
-						title="4. Delivery type"
+						title="5. Delivery type"
 						minWidth="1024"
 						editable="false"
 						layout="ResponsiveGridLayout">
 						<form:content>
 							<Label text="Chosen delivery type"/>
-							<Text id="selectedDel" text="{/selectedDeliveryMethod}"/>
 							<Text text="{/selectedDeliveryMethod}"/>
 							<Link press="handleNavBackToDeliveryType" text="Edit"/>
 						</form:content>
