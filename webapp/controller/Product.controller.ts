@@ -87,22 +87,29 @@ export default class ProductController extends Controller {
         }
     
     }
-    public async fetchProductData(): Promise<void> {    
-        const sPath = "/Products";     
+    public async fetchProductData(): Promise<void> { 
+        const list = this.getView()?.byId("prodList") as List;
+        
+           
         try {
+            list.setBusy(true);
+            const sPath = "/Products";  
             const oData: any = await new Promise((resolve, reject) => {
+                
                 this.oDataModel.read(sPath, {
                     success: resolve,
                     error: reject,
                 });
             });
+            
             this.Products = oData.results;
           
-            const list = this.getView()?.byId("prodList") as List;
+            
             const oModel = new JSONModel(this.Products);
             oModel.setData({items:this.Products});
             list!.setModel(oModel,"prodModel");
         let totalUnitPrice = 0;
+        
         for (const product of this.Products as any) {
             let unitPrice = parseFloat(product.UnitPrice);
             unitPrice = parseFloat(unitPrice.toFixed(2));
@@ -110,6 +117,9 @@ export default class ProductController extends Controller {
         }    
              this.model.setProperty("/ProductsTotalPrice",totalUnitPrice);   
         } catch (error) {   
+        }
+        finally {
+            list.setBusy(false); 
         }
     }
     public selectedPaymentMethod():void{
